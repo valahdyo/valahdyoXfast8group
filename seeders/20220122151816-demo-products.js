@@ -7,6 +7,15 @@ module.exports = {
       "products",
       [
         {
+          title: "Fjallraven - Foldsack No. 1 Backpack, Fits 15 Laptops",
+          image: "nutech-file/81fPKd-2AYL._AC_SL1500__elztdo",
+          stock: 72,
+          buyPrice: 1539300,
+          sellPrice: 1319400,
+          description:
+            "Your perfect pack for everyday use and walks in the forest. Stash your laptop (up to 15 inches) in the padded sleeve, your everyday",
+        },
+        {
           title: "Mens Casual Premium Slim Fit T-Shirts ",
           image: "nutech-file/71-3HjGNDUL._AC_SY879._SX._UX._SY._UY__tm17od",
           stock: 103,

@@ -32,7 +32,7 @@ exports.getProducts = async (req, res) => {
         exclude: ["updatedAt", "createdAt"],
       },
     })
-
+    data = JSON.parse(JSON.stringify(data))
     data = data.map((item) => {
       item.image = FILE_PATH + item.image
       return { ...item }

@@ -29,8 +29,7 @@ exports.login = async (req, res) => {
     )
     res.status(200).send({
       msg: "success",
-      user: { email, fullName: data.fullName },
-      accessToken,
+      user: { email, fullName: data.fullName, accessToken },
     })
   } catch (error) {
     console.log(error)

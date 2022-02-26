@@ -5,8 +5,7 @@ const cors = require("cors")
 const app = express()
 require("dotenv").config()
 
-app.use(cors())
-app.options("*", cors())
+app.use(cors({ origin: true }))
 app.use(express.json())
 
 //base url {url}/api

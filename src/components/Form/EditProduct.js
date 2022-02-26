@@ -17,6 +17,7 @@ export default function EditProduct({ product, handleCloseModal, refetch }) {
     description: "",
   })
 
+  //Get product data to check duplicate name
   let { data: dataProduct } = useQuery("dataProductCache", async () => {
     const config = {
       headers: {
@@ -59,9 +60,8 @@ export default function EditProduct({ product, handleCloseModal, refetch }) {
     inputRef.current?.click()
   }
 
-  /**
-   * Handle submit button when clicked and request post method to backend
-   */ const validateFile = (inputRef) => {
+  //Validate type format and size image uploaded
+  const validateFile = (inputRef) => {
     const supportedFormat = ["image/jpeg", "image/png", "image/jpg"]
     const fileType = inputRef.current.files[0].type
     const fileSize = inputRef.current.files[0].size
@@ -76,6 +76,7 @@ export default function EditProduct({ product, handleCloseModal, refetch }) {
     }
   }
 
+  // Check if name is exist
   const validateName = (name) => {
     if (name) {
       const exist = dataProduct?.filter((post) => {

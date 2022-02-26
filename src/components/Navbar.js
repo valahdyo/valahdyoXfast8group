@@ -7,22 +7,15 @@ import { useState } from "react"
 
 export default function NavbarComponent({ refetch }) {
   const [state, dispatch] = useContext(AuthContext)
+
+  //Get login state
   const isLogin = localStorage.getItem("isLogin")
+
+  //Show or hide login modal
   const [showLogin, setShowLogin] = useState(false)
   const closeLogin = () => setShowLogin(false)
 
   return (
-    // <nav class="navbar navbar-expand-lg navbar-light bg-light">
-    //   <div class="w-100 d-flex justify-content-between">
-    //     <div class="navbar-header ps-3">
-    //       <p class="navbar-brand mt-2">NUMERCH</p>
-    //     </div>
-
-    //     <div>
-    //       <Button className="navBtnRegister">Login</Button>
-    //     </div>
-    //   </div>
-    // </nav>
     <>
       <Navbar className="navTheme justify-content-between">
         <Navbar.Brand as={Link} to="/">

@@ -39,6 +39,7 @@ export default function EditProduct({ product, handleCloseModal, refetch }) {
     }
   }
 
+  //Validate type format and size image uploaded
   const validateFile = (inputRef) => {
     const supportedFormat = ["image/jpeg", "image/png", "image/jpg"]
     const fileType = inputRef.current.files[0].type
@@ -54,6 +55,7 @@ export default function EditProduct({ product, handleCloseModal, refetch }) {
     }
   }
 
+  // Check if name is exist
   const validateName = (name) => {
     if (name) {
       const exist = product.filter((post) => {
@@ -67,6 +69,7 @@ export default function EditProduct({ product, handleCloseModal, refetch }) {
     }
   }
 
+  //Check all field if empty
   const handleValidForm = (event) => {
     const form = event.target
     console.log(event)
@@ -104,8 +107,9 @@ export default function EditProduct({ product, handleCloseModal, refetch }) {
         formData.append("sellPrice", form.sellPrice)
       form.description.length !== 0 &&
         formData.append("description", form.description)
-      let format = ["title", "stock", "buyPrice", "sellPrice", "description"]
 
+      // Check all field is not empty
+      let format = ["title", "stock", "buyPrice", "sellPrice", "description"]
       for (var element of format) {
         if (!form[element]) {
           console.log(element)

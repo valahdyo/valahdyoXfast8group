@@ -15,8 +15,8 @@ export default function Home() {
     currentPage: 1,
     productPerPage: 8,
   })
-  const [isAdd, setIsAdd] = useState(false)
 
+  // Request to server product data
   let { data: dataProduct, refetch } = useQuery(
     "dataProductCache",
     async () => {
@@ -30,7 +30,11 @@ export default function Home() {
     }
   )
 
+  //Toggle show / hide add product modal
+  const [isAdd, setIsAdd] = useState(false)
   const handleCloseModal = () => setIsAdd(false)
+
+  //Pagination
   const paginate = (pageNum) => {
     setPageInfo({ ...pageInfo, currentPage: pageNum })
   }
@@ -38,12 +42,11 @@ export default function Home() {
     if (pageInfo.currentPage < dataProduct.length / pageInfo.productPerPage)
       setPageInfo({ ...pageInfo, currentPage: pageInfo.currentPage + 1 })
   }
-
   const prevPage = () => {
     if (pageInfo.currentPage > 1)
       setPageInfo({ ...pageInfo, currentPage: pageInfo.currentPage - 1 })
   }
-
+  //Get first and last index of product on one page
   const indexOfLastPost = pageInfo.currentPage * pageInfo.productPerPage
   const indexOfFirstPost = indexOfLastPost - pageInfo.productPerPage
 
@@ -63,6 +66,7 @@ export default function Home() {
               aria-label="Search"
             />
           </Form>
+          {/* Conditional rendering button add product */}
           {localStorage.isLogin === "true" && (
             <Button className="addProductBtn" onClick={() => setIsAdd(true)}>
               + Add Product
@@ -72,6 +76,8 @@ export default function Home() {
       </div>
       <Container className="ps-3" fluid>
         <Row>
+          {/* Searching by product name using filter method */}
+          {/* Slice data product for every page */}
           {query.length > 0
             ? dataProduct
                 ?.filter((post) => {
@@ -92,6 +98,7 @@ export default function Home() {
                   <ProductCard product={item} key={index} refetch={refetch} />
                 ))}
         </Row>
+        {/* Page button */}
         <Pagination
           productPerPage={pageInfo.productPerPage}
           totalProduct={dataProduct?.length}
@@ -106,6 +113,7 @@ export default function Home() {
       <div class="footer">
         <p>Made for test by Valahdyo</p>
       </div>
+      {/* Component Add Modal Product */}
       <AddModal
         showAdd={isAdd}
         handleCloseModal={handleCloseModal}

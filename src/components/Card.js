@@ -2,10 +2,11 @@ import { Card, Button, Col } from "react-bootstrap"
 import toRupiah from "@develoka/angka-rupiah-js"
 
 import { useState } from "react"
-import EditModal from "../components/EditModal"
+import EditModal from "./Modal/EditModal"
 import DeleteModal from "./Modal/DeleteModal"
 
 export default function ProductCard({ product, key, refetch }) {
+  //Show or hide edit modal and delete modal
   const [isEdit, setIsEdit] = useState({
     showModal: false,
     data: null,

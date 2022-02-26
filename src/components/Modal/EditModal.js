@@ -1,4 +1,4 @@
-import EditProduct from "./Form/EditProduct"
+import EditProduct from "../Form/EditProduct"
 
 import { useState } from "react"
 import { Modal, Form } from "react-bootstrap"

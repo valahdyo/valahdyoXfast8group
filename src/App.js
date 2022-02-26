@@ -8,7 +8,7 @@ import "bootstrap/dist/css/bootstrap.min.css"
 import "./styles/index.css"
 
 /**
- * Set token ke request header when token in local storage exist
+ * Set token to request header when token in local storage exist
  */
 function App() {
   useEffect(() => {

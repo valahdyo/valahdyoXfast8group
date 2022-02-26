@@ -2,20 +2,33 @@ import NavbarComponent from "../components/Navbar"
 import ProductCard from "../components/Card"
 import AddModal from "../components/Modal/AddModal"
 import Pagination from "../components/Pagination"
+import { useQuery } from "react-query"
 
-import { Col, Container, Row, Button, Form } from "react-bootstrap"
-import { useEffect, useState } from "react"
+import { Container, Row, Button, Form } from "react-bootstrap"
+import { useContext, useEffect, useState } from "react"
 import { API } from "../config/api"
 import fakeProduct from "../fakeData/product"
 
 export default function Home() {
-  const [dataProduct, setDataProduct] = useState([])
   const [query, setQuery] = useState("")
   const [pageInfo, setPageInfo] = useState({
     currentPage: 1,
     productPerPage: 8,
   })
   const [isAdd, setIsAdd] = useState(false)
+
+  let { data: dataProduct, refetch } = useQuery(
+    "dataProductCache",
+    async () => {
+      const config = {
+        headers: {
+          "Content-type": "application/json",
+        },
+      }
+      const response = await API.get("/products")
+      return response?.data.data
+    }
+  )
 
   const handleCloseModal = () => setIsAdd(false)
   const paginate = (pageNum) => {
@@ -31,22 +44,12 @@ export default function Home() {
       setPageInfo({ ...pageInfo, currentPage: pageInfo.currentPage - 1 })
   }
 
-  useEffect(() => {
-    const getAllProducts = async () => {
-      const response = await API.get("/products")
-      setDataProduct(response.data)
-      console.log(response.data)
-    }
-    // getAllProducts()
-    setDataProduct(fakeProduct)
-  }, [])
-
   const indexOfLastPost = pageInfo.currentPage * pageInfo.productPerPage
   const indexOfFirstPost = indexOfLastPost - pageInfo.productPerPage
 
   return (
     <>
-      <NavbarComponent />
+      <NavbarComponent refetch={refetch} />
       <div className="d-flex justify-content-between mb-3">
         <h4 className="mt-3 ms-3">All Product ({dataProduct?.length})</h4>
         <div className="d-flex">
@@ -60,9 +63,11 @@ export default function Home() {
               aria-label="Search"
             />
           </Form>
-          <Button className="addProductBtn" onClick={() => setIsAdd(true)}>
-            + Add Product
-          </Button>
+          {localStorage.isLogin === "true" && (
+            <Button className="addProductBtn" onClick={() => setIsAdd(true)}>
+              + Add Product
+            </Button>
+          )}
         </div>
       </div>
       <Container className="ps-3" fluid>
@@ -78,18 +83,18 @@ export default function Home() {
                     return post
                   }
                 })
-                .map((item, index) => (
-                  <ProductCard product={item} key={index} />
+                ?.map((item, index) => (
+                  <ProductCard product={item} key={index} refetch={refetch} />
                 ))
             : dataProduct
-                .slice(indexOfFirstPost, indexOfLastPost)
+                ?.slice(indexOfFirstPost, indexOfLastPost)
                 .map((item, index) => (
-                  <ProductCard product={item} key={index} />
+                  <ProductCard product={item} key={index} refetch={refetch} />
                 ))}
         </Row>
         <Pagination
           productPerPage={pageInfo.productPerPage}
-          totalProduct={dataProduct.length}
+          totalProduct={dataProduct?.length}
           paginate={paginate}
           nextPage={nextPage}
           prevPage={prevPage}
@@ -105,6 +110,7 @@ export default function Home() {
         showAdd={isAdd}
         handleCloseModal={handleCloseModal}
         product={dataProduct}
+        refetch={refetch}
       />
     </>
   )

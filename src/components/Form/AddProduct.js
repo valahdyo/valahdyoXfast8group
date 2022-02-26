@@ -1,25 +1,21 @@
 import { useState, useRef } from "react"
+import ReactLoading from "react-loading"
+import { useMutation } from "react-query"
+
 import { Button, Form, Row, Col, Alert } from "react-bootstrap"
 
 import { API } from "../../config/api"
 
-export default function EditProduct({ product }) {
+export default function EditProduct({ product, handleCloseModal, refetch }) {
   const [validated, setValidated] = useState(false)
   const [preview, setPreview] = useState(null)
   const [message, setMessage] = useState(null)
-  const [form, setForm] = useState({
-    title: "",
-    thumbnail: "",
-    stock: "",
-    buyPrice: "",
-    sellPrice: "",
-    description: "",
-  })
+  const [form, setForm] = useState({})
 
   const { title, stock, description, buyPrice, sellPrice } = form
 
   /**
-   * Thumbnail upload image input ref form
+   * image upload image input ref form
    */
   const inputRef = useRef(null)
 
@@ -33,6 +29,7 @@ export default function EditProduct({ product }) {
       [e.target.name]:
         e.target.type === "file" ? e.target.files : e.target.value,
     })
+    console.log(form)
     if (e.target.type === "file") {
       if (inputRef.current?.files) {
         let url = URL.createObjectURL(e.target.files[0])
@@ -71,8 +68,8 @@ export default function EditProduct({ product }) {
   }
 
   const handleValidForm = (event) => {
-    const form = event.currentTarget
-    console.log(form)
+    const form = event.target
+    console.log(event)
     if (form.checkValidity() === false) {
       event.preventDefault()
       event.stopPropagation()
@@ -82,7 +79,7 @@ export default function EditProduct({ product }) {
   }
 
   /**
-   * Handle when attach thumbnail clicked
+   * Handle when attach image clicked
    */
   const handleUploadImage = () => {
     inputRef.current?.click()
@@ -91,20 +88,32 @@ export default function EditProduct({ product }) {
   /**
    * Handle submit button when clicked and request post method to backend
    */
-  const handleSubmit = async (e) => {
+  const handleSubmit = useMutation(async (e) => {
     try {
       e.preventDefault()
       handleValidForm(e)
       const formData = new FormData()
-      if (form.thumbnail[0]) {
-        formData.set("thumbnail", form?.thumbnail[0], form.thumbnail[0]?.name)
+      console.log(form)
+      if (form.image) {
+        formData.append("image", form?.image[0], form.image[0]?.name)
       }
-      form.title.length !== 0 && formData.set("title", form.title)
-      form.stock.length !== 0 && formData.set("stock", form.stock)
-      form.buyPrice.length !== 0 && formData.set("buyPrice", form.buyPrice)
-      form.sellPrice.length !== 0 && formData.set("sellPrice", form.sellPrice)
+      form.title.length !== 0 && formData.append("title", form.title)
+      form.stock.length !== 0 && formData.append("stock", form.stock)
+      form.buyPrice.length !== 0 && formData.append("buyPrice", form.buyPrice)
+      form.sellPrice.length !== 0 &&
+        formData.append("sellPrice", form.sellPrice)
       form.description.length !== 0 &&
-        formData.set("description", form.description)
+        formData.append("description", form.description)
+      let format = ["title", "stock", "buyPrice", "sellPrice", "description"]
+
+      for (var element of format) {
+        if (!form[element]) {
+          console.log(element)
+          throw new Error("Please fill all field")
+        }
+      }
+
+      //validation
       if (inputRef.current.files[0]) {
         validateFile(inputRef)
       } else {
@@ -113,7 +122,17 @@ export default function EditProduct({ product }) {
       if (form.title.length !== 0) {
         validateName(form.title)
       }
+
+      //add request
+      const config = {
+        headers: {
+          "Content-type": "multipart/form-data",
+        },
+      }
+      const response = await API.post("/products", formData, config)
       setMessage(null)
+      handleCloseModal()
+      refetch()
     } catch (error) {
       console.log(error)
       const alert = (
@@ -123,25 +142,25 @@ export default function EditProduct({ product }) {
       )
       setMessage(alert)
     }
-  }
+  })
 
   return (
     <>
       {true && message}
       {preview && (
-        <img
-          className="product-image-preview mb-3"
-          src={preview}
-          alt="thumbnail"
-        />
+        <img className="product-image-preview mb-3" src={preview} alt="image" />
       )}
-      <Form noValidate validated={validated} onSubmit={handleSubmit}>
+      <Form
+        noValidate
+        validated={validated}
+        onSubmit={(e) => handleSubmit.mutate(e)}
+      >
         <Form.Group className="mb-3" controlId="formTitle">
           <div className="mb-3">
             <input
               ref={inputRef}
               onChange={handleChange}
-              name="thumbnail"
+              name="image"
               className="d-none"
               type="file"
               accept="image/png, image/gif, image/jpeg, image/jpg"
@@ -239,13 +258,15 @@ export default function EditProduct({ product }) {
         </Form.Group>
 
         <Button
-          onClick={(e) => handleSubmit(e)}
           // style={{ marginLeft: "75%" }}
-          className="mt-5 donate-btn w-100"
+          className="mt-5 donate-btn w-100 d-flex justify-content-center"
           type="submit"
           size="sm"
         >
-          Add Product
+          <div className="me-3">Add Product</div>
+          {handleSubmit.isLoading && (
+            <ReactLoading type="spin" height="5%" width="5%" />
+          )}
         </Button>
       </Form>
     </>

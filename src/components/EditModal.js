@@ -3,7 +3,8 @@ import EditProduct from "./Form/EditProduct"
 import { useState } from "react"
 import { Modal, Form } from "react-bootstrap"
 
-export default function EditModal({ showEdit, handleCloseModal, product }) {
+export default function EditModal(props) {
+  const { showEdit, handleCloseModal, product, refetch } = props
   return (
     <Modal
       show={showEdit}
@@ -11,7 +12,11 @@ export default function EditModal({ showEdit, handleCloseModal, product }) {
       contentClassName="w-100 m-auto"
     >
       <Modal.Body>
-        <EditProduct product={product} />
+        <EditProduct
+          product={product}
+          handleCloseModal={handleCloseModal}
+          refetch={refetch}
+        />
       </Modal.Body>
     </Modal>
   )

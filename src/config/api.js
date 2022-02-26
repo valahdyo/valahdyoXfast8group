@@ -4,8 +4,10 @@ import axios from "axios"
  * Setting up axios
  */
 export const API = axios.create({
-  baseURL: process.env.REACT_APP_BASEURL || "https://fakestoreapi.com/",
+  baseURL: process.env.REACT_APP_BASEURL || "http://localhost:5000/api/",
 })
+
+//https://numerch.herokuapp.com/api/
 
 // Set Authorization Token Header
 export const setAuthToken = (token) => {

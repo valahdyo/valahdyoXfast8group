@@ -1,6 +1,31 @@
-import { Modal, Button } from "react-bootstrap"
+import { Modal, Button, Alert } from "react-bootstrap"
+import { useMutation } from "react-query"
+import { useState } from "react"
+import { API } from "../../config/api"
 
-export default function DeleteModal({ showDelete, handleCloseModal, product }) {
+export default function DeleteModal(props) {
+  const { showDelete, handleCloseModal, product, refetch } = props
+  const [message, setMessage] = useState(null)
+
+  const handleDelete = useMutation(async (e) => {
+    try {
+      e.preventDefault()
+      //add request
+
+      const response = await API.delete("/products/" + product.id)
+      setMessage(null)
+      handleCloseModal()
+      refetch()
+    } catch (error) {
+      console.log(error)
+      const alert = (
+        <Alert variant="danger" className="py-1">
+          {error.message}
+        </Alert>
+      )
+      setMessage(alert)
+    }
+  })
   return (
     <Modal
       show={showDelete}
@@ -15,7 +40,9 @@ export default function DeleteModal({ showDelete, handleCloseModal, product }) {
         <Button onClick={handleCloseModal} variant="secondary">
           Close
         </Button>
-        <Button variant="danger">Yes</Button>
+        <Button onClick={(e) => handleDelete.mutate(e)} variant="danger">
+          Yes
+        </Button>
       </Modal.Footer>
     </Modal>
   )

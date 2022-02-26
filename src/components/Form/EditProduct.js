@@ -67,7 +67,6 @@ export default function EditProduct({ product, handleCloseModal, refetch }) {
     const fileSize = inputRef.current.files[0].size
     if (inputRef.current.files[0]) {
       if (inputRef && !supportedFormat.includes(fileType)) {
-        console.log("executed")
         throw new Error("Not allowed file format")
       }
       if (inputRef && fileSize > 1024 * 100) {

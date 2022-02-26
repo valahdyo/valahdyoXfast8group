@@ -29,12 +29,10 @@ export default function EditProduct({ product, handleCloseModal, refetch }) {
       [e.target.name]:
         e.target.type === "file" ? e.target.files : e.target.value,
     })
-    console.log(form)
     if (e.target.type === "file") {
       if (inputRef.current?.files) {
         let url = URL.createObjectURL(e.target.files[0])
         setPreview(url)
-        console.log(inputRef.current.files[0])
       }
     }
   }
@@ -46,7 +44,6 @@ export default function EditProduct({ product, handleCloseModal, refetch }) {
     const fileSize = inputRef.current.files[0].size
     if (inputRef.current.files[0]) {
       if (inputRef && !supportedFormat.includes(fileType)) {
-        console.log("executed")
         throw new Error("Not allowed file format")
       }
       if (inputRef && fileSize > 1024 * 100) {
@@ -72,7 +69,6 @@ export default function EditProduct({ product, handleCloseModal, refetch }) {
   //Check all field if empty
   const handleValidForm = (event) => {
     const form = event.target
-    console.log(event)
     if (form.checkValidity() === false) {
       event.preventDefault()
       event.stopPropagation()
@@ -96,7 +92,6 @@ export default function EditProduct({ product, handleCloseModal, refetch }) {
       e.preventDefault()
       handleValidForm(e)
       const formData = new FormData()
-      console.log(form)
       if (form.image) {
         formData.append("image", form?.image[0], form.image[0]?.name)
       }
@@ -112,7 +107,6 @@ export default function EditProduct({ product, handleCloseModal, refetch }) {
       let format = ["title", "stock", "buyPrice", "sellPrice", "description"]
       for (var element of format) {
         if (!form[element]) {
-          console.log(element)
           throw new Error("Please fill all field")
         }
       }

@@ -11,6 +11,7 @@ Front-end is created with:
 - React Router
 - Axios
 - React Query
+- JSON Web Token
 
 ## Setup
 
